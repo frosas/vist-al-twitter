@@ -28,12 +28,3 @@ phantom.runOnPage = function (url, callback) {
         });
     });
 };
-
-/**
- * @return {Promise}
- */
-phantom.evaluateOnPage = function (url, callback) {
-    return this.runOnPage(url, function () {
-        return this.evaluate(callback);
-    });
-};

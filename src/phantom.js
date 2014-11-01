@@ -8,7 +8,7 @@ var phantom = module.exports = {};
  */
 phantom.spawn = function (callback) {
     console.log('Spawning Phantom...');
-    return phridge.spawn().then(function (phridgePhantom) {
+    return phridge.spawn({loadImages: false}).then(function (phridgePhantom) {
         console.log('Phantom spawn');
         return Promise
             .try(function () { return callback(phridgePhantom); })

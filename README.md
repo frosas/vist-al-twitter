@@ -1,3 +1,10 @@
+### Usage
+
+```bash
+$ npm install
+$ node src/index.js
+```
+
 ### TODO
 
 - Hide browser JS errors by default

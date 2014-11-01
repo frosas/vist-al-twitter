@@ -1,0 +1,8 @@
+{
+  "name": "vist-al-twitter",
+  "version": "0.0.0",
+  "devDependencies": {
+    "bluebird": "^2.3.10",
+    "phridge": "^1.0.7"
+  }
+}

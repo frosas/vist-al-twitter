@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "devDependencies": {
     "bluebird": "^2.3.10",
-    "phridge": "^1.0.7"
+    "mocha": "^2.0.1",
+    "phridge": "^1.0.7",
+    "twit": "^1.1.18"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "mocha --recursive tests"
   }
 }

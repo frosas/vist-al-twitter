@@ -2,7 +2,17 @@
 
 ```bash
 $ npm install
-$ node src/index.js
+$ export VIST_AL_TWITTER_CONSUMER_KEY="..."
+$ export VIST_AL_TWITTER_CONSUMER_SECRET="..."
+$ export VIST_AL_TWITTER_ACCESS_TOKEN="..."
+$ export VIST_AL_TWITTER_ACCESS_TOKEN_SECRET="..."
+$ npm start
+```
+
+### Testing
+
+```bash
+$ npm test
 ```
 
 ### TODO
@@ -15,3 +25,4 @@ $ node src/index.js
 - Only log errors when extracting tweets from a topic page fails
 - Fix "possible EventEmitter memory leak detected. 11 listeners added. Use emitter.setMaxListeners() 
   to increase limit." warning
+- Fix PhantomJS processes not ever finishing

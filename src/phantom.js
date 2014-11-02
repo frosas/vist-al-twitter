@@ -8,12 +8,13 @@ var phantom = module.exports = {};
  */
 phantom.spawn = function (callback) {
     console.log('Spawning Phantom...');
-    return phridge.spawn({loadImages: false}).then(function (phridgePhantom) {
-        console.log('Phantom spawn');
-        return Promise
-            .try(function () { return callback(phridgePhantom); })
-            .finally(function () { phridgePhantom.dispose(); });
-    });
+    return phridge.spawn({autoLoadImages: false, diskCacheEnabled: true})
+        .then(function (phridgePhantom) {
+            console.log('Phantom spawn');
+            return Promise
+                .try(function () { return callback(phridgePhantom); })
+                .finally(function () { phridgePhantom.dispose(); });
+        });
 };
 
 /**

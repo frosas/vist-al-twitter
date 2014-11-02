@@ -26,3 +26,5 @@ $ npm test
 - Fix "possible EventEmitter memory leak detected. 11 listeners added. Use emitter.setMaxListeners() 
   to increase limit." warning
 - Fix PhantomJS processes not ever finishing
+
+  > I strongly recommend to call phridge.disposeAll() when the node process exits as this is the only way to ensure that all child processes terminate as well. Since disposeAll() is async it is not safe to call it on process.on("exit"). It is better to call it on SIGINT, SIGTERM and within your regular exit flow.

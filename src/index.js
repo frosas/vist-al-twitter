@@ -1,13 +1,7 @@
 var Promise = require('bluebird');
 var phantom = require('./phantom');
-var Twit = require('twit');
+var Twitter = require('./twitter');
 var misc = require('./misc');
-
-Promise.longStackTraces();
-
-var promisify = function (object, func) {
-    return Promise.promisify(object[func], object);
-};
 
 var getTopicUrls = function () {
     return phantom.runOnPage('http://www.ara.cat/vistaltwitter', function () {
@@ -34,7 +28,9 @@ var getTopicTweets = function (topicUrl) {
         .filter(function (tweetOrNull) { return tweetOrNull; });
 };
 
-var twit = new Twit({
+Promise.longStackTraces();
+
+var twitter = new Twitter({
     consumer_key: process.env.VIST_AL_TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.VIST_AL_TWITTER_CONSUMER_SECRET,
     access_token: process.env.VIST_AL_TWITTER_ACCESS_TOKEN,
@@ -45,7 +41,7 @@ Promise.resolve(getTopicUrls())
     .map(function (topicUrl) {
         return Promise.resolve(getTopicTweets(topicUrl)).map(function (tweet) {
             console.log('Retweeting ' + tweet.url + '...');
-            return promisify(twit, 'post')('statuses/retweet/:id', {id: tweet.id});
+            return twitter.retweet(tweet.id);
         });
     })
     .done();

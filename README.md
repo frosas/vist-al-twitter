@@ -18,8 +18,8 @@ $ npm test
 ### TODO
 
 - Hide browser JS errors by default
-- Retweet tweets
-- Deploy to production
+- ~~Retweet tweets~~
+- Cron it
 - Log (and control) messages through a logger
 - Test, test, test!
 - Only log errors when extracting tweets from a topic page fails

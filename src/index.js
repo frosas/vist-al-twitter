@@ -37,11 +37,9 @@ var twitter = new Twitter({
     access_token_secret: process.env.VIST_AL_TWITTER_ACCESS_TOKEN_SECRET
 });
 
-Promise.resolve(getTopicUrls())
-    .map(function (topicUrl) {
-        return Promise.resolve(getTopicTweets(topicUrl)).map(function (tweet) {
-            console.log('Retweeting ' + tweet.url + '...');
-            return twitter.retweet(tweet.id);
-        });
-    })
-    .done();
+module.exports = Promise.resolve(getTopicUrls()).map(function (topicUrl) {
+    return Promise.resolve(getTopicTweets(topicUrl)).map(function (tweet) {
+        console.log('Retweeting ' + tweet.url + '...');
+        return twitter.retweet(tweet.id);
+    });
+});

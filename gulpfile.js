@@ -6,7 +6,6 @@ gulp.task('default', function() {
     return require('./src/index');
 });
 
-// See http://stackoverflow.com/a/24784196/337172
 gulp.task('test', function(done) {
     gulp.src('src/**/*.js')
         .pipe(istanbul({includeUntested: true}))

@@ -2,6 +2,7 @@
   "name": "vist-al-twitter",
   "version": "0.0.0",
   "devDependencies": {
+    "baconjs": "^0.7.28",
     "bluebird": "^2.3.10",
     "gulp": "^3.8.9",
     "gulp-istanbul": "^0.3.1",

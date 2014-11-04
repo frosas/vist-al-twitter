@@ -2,6 +2,7 @@ var Promise = require('bluebird');
 var phantom = require('./phantom');
 var Twitter = require('./twitter');
 var misc = require('./misc');
+var Bacon = require('baconjs');
 
 var getTopicUrls = function () {
     return phantom.runOnPage('http://www.ara.cat/vistaltwitter', function () {
@@ -28,6 +29,16 @@ var getTopicTweets = function (topicUrl) {
         .filter(function (tweetOrNull) { return tweetOrNull; });
 };
 
+var getTweets = function () {
+    return Bacon.fromBinder(function (sink) {
+        Promise.resolve(getTopicUrls())
+            .map(function (url) { return Promise.resolve(getTopicTweets(url)).map(sink); })
+            .catch(function (error) { sink(new Bacon.Error(error)); })
+            .finally(function () { sink(new Bacon.End()); })
+            .done();
+    });
+};
+
 Promise.longStackTraces();
 
 var twitter = new Twitter({
@@ -37,9 +48,12 @@ var twitter = new Twitter({
     access_token_secret: process.env.VIST_AL_TWITTER_ACCESS_TOKEN_SECRET
 });
 
-module.exports = Promise.resolve(getTopicUrls()).map(function (topicUrl) {
-    return Promise.resolve(getTopicTweets(topicUrl)).map(function (tweet) {
+module.exports = new Promise(function (resolve, reject) {
+    // TODO Does Bluebird catch thrown exceptions here?
+    var retweets = getTweets().flatMap(function (tweet) {
         console.log('Retweeting ' + tweet.url + '...');
-        return twitter.retweet(tweet.id);
+        return Bacon.fromPromise(twitter.retweet(tweet.id));
     });
+    retweets.onError(function (error) { console.error(error); });
+    retweets.onEnd(resolve);
 });

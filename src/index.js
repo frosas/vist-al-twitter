@@ -35,7 +35,13 @@ var getTweets = function () {
             .map(function (url) { return Promise.resolve(getTopicTweets(url)).map(sink); })
             .catch(function (error) { sink(new Bacon.Error(error)); })
             .finally(function () { sink(new Bacon.End()); })
-            .done();
+            .done(); // TODO Are errors caught by Bacon?
+    });
+};
+
+var retweetAll = function () {
+    return getTweets().flatMap(function (tweet) {
+        return Bacon.fromPromise(twitter.retweet(tweet.id).return(tweet));
     });
 };
 
@@ -50,10 +56,8 @@ var twitter = new Twitter({
 
 module.exports = new Promise(function (resolve, reject) {
     // TODO Does Bluebird catch thrown exceptions here?
-    var retweets = getTweets().flatMap(function (tweet) {
-        console.log('Retweeting ' + tweet.url + '...');
-        return Bacon.fromPromise(twitter.retweet(tweet.id));
-    });
+    var retweets = retweetAll();
+    retweets.onValue(function (tweet) { console.log(tweet.url + ' retweeted'); });
     retweets.onError(function (error) { console.error(error); });
     retweets.onEnd(resolve);
 });

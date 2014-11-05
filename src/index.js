@@ -3,9 +3,10 @@ var phantom = require('./phantom');
 var Twitter = require('./twitter');
 var misc = require('./misc');
 var Bacon = require('baconjs');
+var PhantomPool = require('./phantom/pool');
 
 var getTopicUrls = function () {
-    return phantom.runOnPage('http://www.ara.cat/vistaltwitter', function () {
+    return phantomPool.runOnPage('http://www.ara.cat/vistaltwitter', function () {
         return this.evaluate(function () {
             return [].map.call(document.querySelectorAll('.entry-title a'), function (a) {
                 return a.href;
@@ -15,7 +16,7 @@ var getTopicUrls = function () {
 };
 
 var getTopicTweets = function (topicUrl) {
-    return Promise.resolve(phantom.runOnPage(topicUrl, function () {
+    return Promise.resolve(phantomPool.runOnPage(topicUrl, function () {
             return this.evaluate(function () {
                 return [].map.call(document.querySelectorAll('#content a'), function (a) {
                     return a.href || '';
@@ -51,6 +52,8 @@ var retweetAll = function () {
 };
 
 Promise.longStackTraces();
+
+var phantomPool = new PhantomPool(2);
 
 var twitter = new Twitter({
     consumer_key: process.env.VIST_AL_TWITTER_CONSUMER_KEY,

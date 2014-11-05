@@ -39,9 +39,14 @@ var getTweets = function () {
     });
 };
 
+/**
+ * @returns [Bacon.EventStream(Object)] The retweeted tweets
+ */
 var retweetAll = function () {
     return getTweets().flatMap(function (tweet) {
-        return Bacon.fromPromise(twitter.retweet(tweet.id).return(tweet));
+        return Bacon.fromPromise(twitter.retweet(tweet.id)).flatMap(function (retweeted) {
+            return retweeted ? tweet : Bacon.never();
+        });
     });
 };
 

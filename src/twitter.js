@@ -17,9 +17,15 @@ Twitter.prototype.post = function () {
     });
 };
 
+/**
+ * @param  {String} tweetId
+ * @return {Promise(booleany)} Whether the tweet has been retweeted
+ */
 Twitter.prototype.retweet = function (tweetId) {
-    return this.post('statuses/retweet/:id', {id: tweetId})
+    return this.post('statuses/retweet/:id', {id: tweetId})        
+        .return(true)
         .catch(function (error) {
-            if (!error.isAlreadyRetweetedError()) throw error;
+            if (error.isAlreadyRetweetedError()) return;
+            throw error;
         });
 };

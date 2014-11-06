@@ -1,5 +1,4 @@
 var Promise = require('bluebird');
-var phantom = require('./phantom');
 var Twitter = require('./twitter');
 var misc = require('./misc');
 var Bacon = require('baconjs');

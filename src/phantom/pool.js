@@ -37,18 +37,15 @@ Pool.prototype._spawnFromQueue = function () {
         var next = this._queue.shift();
         this._current++;
         this._getOrSpawnPhantom()
-            .tap(function(phridgePhantom) {
-                return Promise.try(function() { return next.callback(phridgePhantom); })
-                    .then(next.resolve, next.reject);
-            })
             .then(function(phridgePhantom) {
-                pool._pool.push(phridgePhantom);
+                return Promise.try(function() { return next.callback(phridgePhantom); })
+                    .finally(function() { pool._pool.push(phridgePhantom); });
             })
             .finally(function() {
                 pool._current--;
                 pool._spawnFromQueue();
             })
-            .done(); // TODO Any better option?
+            .then(next.resolve, next.reject);
     } else {
         this._dispose();
     }

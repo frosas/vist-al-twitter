@@ -1,7 +1,10 @@
 {
   "name": "vist-al-twitter",
   "version": "0.0.0",
-  "devDependencies": {
+  "scripts": {
+    "start": "bin/start"
+  },
+  "dependencies": {
     "baconjs": "^0.7.28",
     "bluebird": "^2.3.10",
     "debug": "^2.1.3",
@@ -12,5 +15,8 @@
     "mocha": "^2.0.1",
     "phridge": "^1.0.7",
     "twit": "^1.1.18"
+  },
+  "engines": {
+    "node": "0.12.x"
   }
 }

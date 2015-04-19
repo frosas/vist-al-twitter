@@ -59,7 +59,7 @@ Pool.prototype._getOrSpawnPhantom = function() {
 Pool.prototype._spawnPhantom = function () {
     debug('Spawning Phantom...');
     return phridge.spawn({autoLoadImages: false, diskCacheEnabled: true})
-        .tap(function (phridgePhantom) { debug('Phantom spawn'); });
+        .tap(function () { debug('Phantom spawn'); });
 };
 
 Pool.prototype._dispose = function() {

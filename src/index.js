@@ -8,7 +8,7 @@ var debug = require('debug')('app');
 var getTopicUrls = function () {
     return phantomPool.runOnPage('http://www.ara.cat/vistaltwitter', function () {
         return this.evaluate(function () {
-            return [].map.call(document.querySelectorAll('.entry-title a'), function (a) {
+            return [].map.call(document.querySelectorAll('.entry-title a'), function (a) { // eslint-disable-line no-undef
                 return a.href;
             });
         });
@@ -18,7 +18,7 @@ var getTopicUrls = function () {
 var getTopicTweets = function (topicUrl) {
     return Promise.resolve(phantomPool.runOnPage(topicUrl, function () {
             return this.evaluate(function () {
-                return [].map.call(document.querySelectorAll('#content a'), function (a) {
+                return [].map.call(document.querySelectorAll('#content a'), function (a) { // eslint-disable-line no-undef
                     return a.href || '';
                 });
             });
@@ -62,7 +62,7 @@ var twitter = new Twitter({
     access_token_secret: process.env.VIST_AL_TWITTER_ACCESS_TOKEN_SECRET
 });
 
-module.exports = new Promise(function (resolve, reject) {
+module.exports = new Promise(function (resolve) {
     // TODO Does Bluebird catch thrown exceptions here?
     var retweets = retweetAll();
     retweets.onValue(function (tweet) { debug(tweet.url + ' retweeted'); });

@@ -1,9 +1,7 @@
 {
   "name": "vist-al-twitter",
   "version": "0.0.0",
-  "scripts": {
-    "start": "bin/start"
-  },
+  "scripts": {"start": "bin/run"},
   "dependencies": {
     "baconjs": "^0.7.28",
     "bluebird": "^2.3.10",

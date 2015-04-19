@@ -4,4 +4,7 @@ set -e
 
 WAIT=$((60 * 60)) # 1 hour
 ROOT_DIR=$(cd $(dirname $0)/.. > /dev/null && pwd)
-while true; do $ROOT_DIR/node_modules/.bin/gulp; sleep $WAIT; done
+
+set -x
+
+while true; do $ROOT_DIR/bin/run; sleep $WAIT; done

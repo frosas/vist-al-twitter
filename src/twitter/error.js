@@ -1,6 +1,8 @@
 var ERROR_ALREADY_RETWEETED = 327;
 
 var TwitterError = module.exports = function (twitError) {
+    this.name = 'TwitterError';
+    Error.captureStackTrace(this, this.constructor);
     this._twitError = twitError;
     this.message = this._getMessage();
 };

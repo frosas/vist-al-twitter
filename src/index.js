@@ -3,6 +3,7 @@ var Twitter = require('./twitter');
 var misc = require('./misc');
 var Bacon = require('baconjs');
 var PhantomPool = require('./phantom/pool');
+var debug = require('debug')('app');
 
 var getTopicUrls = function () {
     return phantomPool.runOnPage('http://www.ara.cat/vistaltwitter', function () {
@@ -64,7 +65,7 @@ var twitter = new Twitter({
 module.exports = new Promise(function (resolve, reject) {
     // TODO Does Bluebird catch thrown exceptions here?
     var retweets = retweetAll();
-    retweets.onValue(function (tweet) { console.log(tweet.url + ' retweeted'); });
+    retweets.onValue(function (tweet) { debug(tweet.url + ' retweeted'); });
     retweets.onError(function (error) { throw error; }); // TODO This is not finalizing the process right?
     retweets.onEnd(resolve);
 });

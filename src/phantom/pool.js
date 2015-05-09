@@ -11,12 +11,8 @@ var Pool = module.exports = function (max) {
 
 Pool.prototype.spawn = function (callback) {
     var pool = this;
-    return new Promise(function(resolve, reject) { // TODO Does it handle exceptions?
-        pool._queue.push({
-            callback: callback,
-            resolve: resolve,
-            reject: reject
-        });
+    return new Promise(function(resolve, reject) {
+        pool._queue.push({callback: callback, resolve: resolve, reject: reject});
         pool._spawnFromQueue();
     });
 };
@@ -42,13 +38,10 @@ Pool.prototype._spawnFromQueue = function () {
                 return Promise.try(function() { return next.callback(phridgePhantom); })
                     .finally(function() { pool._pool.push(phridgePhantom); });
             })
-            .finally(function() {
-                pool._current--;
-                pool._spawnFromQueue();
-            })
+            .finally(function() { pool._current--; pool._spawnFromQueue(); })
             .then(next.resolve, next.reject);
     } else {
-        this._dispose();
+        this._disposeAll();
     }
 };
 
@@ -62,7 +55,7 @@ Pool.prototype._spawnPhantom = function () {
         .tap(function () { debug('Phantom spawn'); });
 };
 
-Pool.prototype._dispose = function() {
+Pool.prototype._disposeAll = function() {
     while (this._pool.length) {
         debug("Disposing phantom...");
         this._pool.shift().dispose()

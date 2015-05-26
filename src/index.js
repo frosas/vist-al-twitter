@@ -62,10 +62,10 @@ var twitter = new Twitter({
     access_token_secret: process.env.VIST_AL_TWITTER_ACCESS_TOKEN_SECRET
 });
 
-module.exports = new Promise(function (resolve, reject) {
+module.exports = new Promise(function (resolve) {
     // TODO Does Bluebird catch thrown exceptions here?
     var retweets = retweetAll();
     retweets.onValue(function (tweet) { debug(tweet.url + ' retweeted'); });
-    retweets.onError(reject);
+    retweets.onError(function (error) { console.error(error.stack); });
     retweets.onEnd(resolve);
 });

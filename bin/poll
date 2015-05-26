@@ -7,4 +7,4 @@ ROOT_DIR=$(cd $(dirname $0)/.. > /dev/null && pwd)
 
 set -x
 
-while true; do $ROOT_DIR/bin/run; sleep $WAIT; done
+while true; do DEBUG=* $ROOT_DIR/bin/run; sleep $WAIT; done

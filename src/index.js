@@ -53,7 +53,7 @@ var retweetAll = function () {
 
 Promise.longStackTraces();
 
-var phantomPool = new PhantomPool(2);
+var phantomPool = new PhantomPool(4);
 
 var twitter = new Twitter({
     consumer_key: process.env.VIST_AL_TWITTER_CONSUMER_KEY,

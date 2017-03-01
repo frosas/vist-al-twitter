@@ -1,5 +1,7 @@
 ### Usage
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/frosas/vist-al-twitter.svg)](https://greenkeeper.io/)
+
 ```bash
 $ npm install
 $ export VIST_AL_TWITTER_CONSUMER_KEY="..."

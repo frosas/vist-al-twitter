@@ -5,14 +5,17 @@ var Bacon = require('baconjs');
 var PhantomPool = require('./phantom/pool');
 var debug = require('debug')('app');
 
-var getTopicUrls = function () {
+var getTopicUrls = () => {
     debug('Obtaining topic URLs...');
     return phantomPool
         .runOnPage('http://www.ara.cat/vistaltwitter', function () {
             return this.evaluate(function () {
-                return [].map.call(document.querySelectorAll('.entry-title a'), function (a) { // eslint-disable-line no-undef
-                    return a.href;
-                });
+                return Object.keys(
+                    [].slice.call(document.querySelectorAll('a[href]'))
+                        .map(function (a) { return a.href.match(/([^#]*)/) && RegExp.$1; })
+                        .filter(function (url) { return url.match(/:\/\/[^\/]+\/vistaltwitter\/.+/); })
+                        .reduce(function (set, url) { set[url] = null; return set; }, {})
+                );
             });
         })
         .then(urls => {
@@ -21,19 +24,21 @@ var getTopicUrls = function () {
         });
 };
 
-var getTopicTweets = function (topicUrl) {
-    return Promise.resolve(phantomPool.runOnPage(topicUrl, function () {
-            return this.evaluate(function () {
-                return [].map.call(document.querySelectorAll('#content a'), function (a) { // eslint-disable-line no-undef
-                    return a.href || '';
+var getTopicTweets = topicUrl => {
+    return Promise.resolve()
+        .then(() => {
+            return phantomPool.runOnPage(topicUrl, function () {
+                return this.evaluate(function () {
+                    return [].slice.call(document.querySelectorAll('#content a[href]'))
+                        .map(function (a) { return a.href; });
                 });
-            });
-        }))
-        .map(function (url) {
-            var tweetId = misc.getTweetIdFromUrl(url);
-            return tweetId && {id: tweetId, url: url};
+            })
         })
-        .filter(function (tweetOrNull) { return tweetOrNull; });
+        .map(url => {
+            const id = misc.getTweetIdFromUrl(url);
+            return id && {id, url};
+        })
+        .filter(tweetOrNull => tweetOrNull);
 };
 
 var getTweets = function () {

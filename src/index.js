@@ -5,38 +5,49 @@ var Bacon = require('baconjs');
 var PhantomPool = require('./phantom/pool');
 var debug = require('debug')('app');
 
-var getTopicUrls = function () {
-    return phantomPool.runOnPage('http://www.ara.cat/vistaltwitter', function () {
-        return this.evaluate(function () {
-            return [].map.call(document.querySelectorAll('.entry-title a'), function (a) { // eslint-disable-line no-undef
-                return a.href;
+var getTopicUrls = () => {
+    debug('Obtaining topic URLs...');
+    return phantomPool
+        .runOnPage('http://www.ara.cat/vistaltwitter', function () {
+            return this.evaluate(function () {
+                return Object.keys(
+                    [].slice.call(document.querySelectorAll('a[href]'))
+                        .map(function (a) { return a.href.match(/([^#]*)/) && RegExp.$1; })
+                        .filter(function (url) { return url.match(/:\/\/[^\/]+\/vistaltwitter\/.+/); })
+                        .reduce(function (set, url) { set[url] = null; return set; }, {})
+                );
             });
+        })
+        .then(urls => {
+            debug(`Topic URLs obtained: ${urls.join(', ')}`);
+            return urls;
         });
-    });
 };
 
-var getTopicTweets = function (topicUrl) {
-    return Promise.resolve(phantomPool.runOnPage(topicUrl, function () {
-            return this.evaluate(function () {
-                return [].map.call(document.querySelectorAll('#content a'), function (a) { // eslint-disable-line no-undef
-                    return a.href || '';
+var getTopicTweets = topicUrl => {
+    return Promise.resolve()
+        .then(() => {
+            return phantomPool.runOnPage(topicUrl, function () {
+                return this.evaluate(function () {
+                    return [].slice.call(document.querySelectorAll('#content a[href]'))
+                        .map(function (a) { return a.href; });
                 });
-            });
-        }))
-        .map(function (url) {
-            var tweetId = misc.getTweetIdFromUrl(url);
-            return tweetId && {id: tweetId, url: url};
+            })
         })
-        .filter(function (tweetOrNull) { return tweetOrNull; });
+        .map(url => {
+            const id = misc.getTweetIdFromUrl(url);
+            return id && {id, url};
+        })
+        .filter(tweetOrNull => tweetOrNull);
 };
 
 var getTweets = function () {
     return Bacon.fromBinder(function (sink) {
-        Promise.resolve(getTopicUrls())
+        Promise.resolve()
+            .then(getTopicUrls)
             .map(function (url) { return Promise.resolve(getTopicTweets(url)).map(sink); })
             .catch(function (error) { sink(new Bacon.Error(error)); })
-            .finally(function () { sink(new Bacon.End()); })
-            .done(); // TODO Are errors caught by Bacon?
+            .finally(function () { sink(new Bacon.End()); });
     });
 };
 
@@ -66,6 +77,6 @@ module.exports = new Promise(function (resolve) {
     // TODO Does Bluebird catch thrown exceptions here?
     var retweets = retweetAll();
     retweets.onValue(function (tweet) { debug(tweet.url + ' retweeted'); });
-    retweets.onError(function (error) { console.error(error.stack); });
+    retweets.onError(function (error) { console.error(error); });
     retweets.onEnd(resolve);
 });

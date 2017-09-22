@@ -72,6 +72,6 @@ module.exports = new Promise(function (resolve) {
     // TODO Does Bluebird catch thrown exceptions here?
     var retweets = retweetAll();
     retweets.onValue(function (tweet) { debug(tweet.url + ' retweeted'); });
-    retweets.onError(function (error) { console.error(error.stack); });
+    retweets.onError(function (error) { console.error(error); });
     retweets.onEnd(resolve);
 });

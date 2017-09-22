@@ -6,13 +6,19 @@ var PhantomPool = require('./phantom/pool');
 var debug = require('debug')('app');
 
 var getTopicUrls = function () {
-    return phantomPool.runOnPage('http://www.ara.cat/vistaltwitter', function () {
-        return this.evaluate(function () {
-            return [].map.call(document.querySelectorAll('.entry-title a'), function (a) { // eslint-disable-line no-undef
-                return a.href;
+    debug('Obtaining topic URLs...');
+    return phantomPool
+        .runOnPage('http://www.ara.cat/vistaltwitter', function () {
+            return this.evaluate(function () {
+                return [].map.call(document.querySelectorAll('.entry-title a'), function (a) { // eslint-disable-line no-undef
+                    return a.href;
+                });
             });
+        })
+        .then(urls => {
+            debug(`Topic URLs obtained: ${urls.join(', ')}`);
+            return urls;
         });
-    });
 };
 
 var getTopicTweets = function (topicUrl) {
@@ -32,11 +38,11 @@ var getTopicTweets = function (topicUrl) {
 
 var getTweets = function () {
     return Bacon.fromBinder(function (sink) {
-        Promise.resolve(getTopicUrls())
+        Promise.resolve()
+            .then(getTopicUrls)
             .map(function (url) { return Promise.resolve(getTopicTweets(url)).map(sink); })
             .catch(function (error) { sink(new Bacon.Error(error)); })
-            .finally(function () { sink(new Bacon.End()); })
-            .done(); // TODO Are errors caught by Bacon?
+            .finally(function () { sink(new Bacon.End()); });
     });
 };
 

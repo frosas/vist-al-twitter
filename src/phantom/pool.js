@@ -21,7 +21,7 @@ Pool.prototype.runOnPage = function(url, callback) {
     return this.spawn(function (phridgePhantom) {
         debug('Opening ' + url + '...');
         return phridgePhantom.openPage(url).then(function (phridgePage) {
-            debug(url + ' opened');
+            debug('Running on page...');
             return phridgePage.run(callback);
         });
     });
@@ -51,15 +51,12 @@ Pool.prototype._getOrSpawnPhantom = function() {
 
 Pool.prototype._spawnPhantom = function () {
     debug('Spawning Phantom...');
-    return phridge.spawn({autoLoadImages: false, diskCacheEnabled: true})
-        .tap(function () { debug('Phantom spawn'); });
+    return phridge.spawn({autoLoadImages: false, diskCacheEnabled: true});
 };
 
 Pool.prototype._disposeAll = function() {
     while (this._pool.length) {
         debug("Disposing phantom...");
-        this._pool.shift().dispose()
-            .then(function() { debug("Phantom disposed"); })
-            .done(); // TODO Any better option?
+        this._pool.shift().dispose(); // TODO Handle rejections
     }
 };

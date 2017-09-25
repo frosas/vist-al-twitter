@@ -9,8 +9,9 @@ $ export VIST_AL_TWITTER_ACCESS_TOKEN_SECRET="..."
 $ [DEBUG=*] bin/run
 ```
 
-### Testing
+### Development
 
 ```bash
 $ node_modules/.bin/gulp test
+$ npm run lint
 ```

@@ -2,6 +2,9 @@
   "name": "vist-al-twitter",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "~8.4.0"
+  },
   "scripts": {
     "test": "mocha 'tests/**/*.js'",
     "lint": "eslint . --fix"
@@ -14,9 +17,6 @@
     "mocha": "^2.0.1",
     "phridge": "^2.0.0",
     "twit": "^1.1.18"
-  },
-  "engines": {
-    "node": "~8.4.0"
   },
   "devDependencies": {
     "eslint": "^4.7.2",

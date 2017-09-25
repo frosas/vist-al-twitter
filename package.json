@@ -6,6 +6,7 @@
     "node": "~8.4.0"
   },
   "scripts": {
+    "start": "node src",
     "test": "mocha 'tests/**/*.js'",
     "lint": "eslint . --fix"
   },

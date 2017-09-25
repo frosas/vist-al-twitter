@@ -2,7 +2,6 @@
 
 set -x
 
-WAIT=$((60 * 60)) # 1 hour
-ROOT_DIR=$(cd $(dirname $0)/.. > /dev/null && pwd)
+SLEEP_DELAY=$((60 * 60)) # 1 hour
 
-while true; do DEBUG="*,-puppeteer:*" $ROOT_DIR/bin/run; sleep $WAIT; done
+while true; do DEBUG="*,-puppeteer:*" npm start; sleep $SLEEP_DELAY; done

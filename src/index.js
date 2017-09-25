@@ -2,13 +2,13 @@ var Promise = require("bluebird");
 var Twitter = require("./twitter");
 var misc = require("./misc");
 var Bacon = require("baconjs");
-var PhantomPool = require("./phantom/pool");
+const BrowserPool = require("./browser/pool");
 var debug = require("debug")("app");
 const browserEvaluators = require("./browser-evaluators");
 
 var getTopicUrls = () => {
   debug("Obtaining topic URLs...");
-  return phantomPool
+  return browserPool
     .runOnPage(
       "https://www.ara.cat/vistaltwitter",
       browserEvaluators.getTopicUrlsEvaluator
@@ -22,7 +22,7 @@ var getTopicUrls = () => {
 var getTopicTweets = topicUrl => {
   return Promise.resolve()
     .then(() => {
-      return phantomPool.runOnPage(
+      return browserPool.runOnPage(
         topicUrl,
         browserEvaluators.getTopicTweetsEvaluator
       );
@@ -65,7 +65,7 @@ var retweetAll = function() {
 
 Promise.longStackTraces();
 
-var phantomPool = new PhantomPool(4);
+var browserPool = new BrowserPool(4);
 
 var twitter = new Twitter({
   consumer_key: process.env.VIST_AL_TWITTER_CONSUMER_KEY,

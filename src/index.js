@@ -8,7 +8,7 @@ var debug = require("debug")("app");
 var getTopicUrls = () => {
   debug("Obtaining topic URLs...");
   return phantomPool
-    .runOnPage("http://www.ara.cat/vistaltwitter", function() {
+    .runOnPage("https://www.ara.cat/vistaltwitter", function() {
       return this.evaluate(function() {
         /* global document */ // TODO Move function to src/browser-functions.js
         return Object.keys(

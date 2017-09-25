@@ -4,29 +4,15 @@ var misc = require("./misc");
 var Bacon = require("baconjs");
 var PhantomPool = require("./phantom/pool");
 var debug = require("debug")("app");
+const browserEvaluators = require("./browser-evaluators");
 
 var getTopicUrls = () => {
   debug("Obtaining topic URLs...");
   return phantomPool
-    .runOnPage("https://www.ara.cat/vistaltwitter", function() {
-      return this.evaluate(function() {
-        /* global document */ // TODO Move function to src/browser-functions.js
-        return Object.keys(
-          [].slice
-            .call(document.querySelectorAll("a[href]"))
-            .map(function(a) {
-              return a.href.match(/([^#]*)/) && RegExp.$1;
-            })
-            .filter(function(url) {
-              return url.match(/:\/\/[^/]+\/vistaltwitter\/.+/);
-            })
-            .reduce(function(set, url) {
-              set[url] = null;
-              return set;
-            }, {})
-        );
-      });
-    })
+    .runOnPage(
+      "https://www.ara.cat/vistaltwitter",
+      browserEvaluators.getTopicUrlsEvaluator
+    )
     .then(urls => {
       debug(`Topic URLs obtained: ${urls.join(", ")}`);
       return urls;
@@ -36,15 +22,10 @@ var getTopicUrls = () => {
 var getTopicTweets = topicUrl => {
   return Promise.resolve()
     .then(() => {
-      return phantomPool.runOnPage(topicUrl, function() {
-        return this.evaluate(function() {
-          return [].slice
-            .call(document.querySelectorAll("#content a[href]"))
-            .map(function(a) {
-              return a.href;
-            });
-        });
-      });
+      return phantomPool.runOnPage(
+        topicUrl,
+        browserEvaluators.getTopicTweetsEvaluator
+      );
     })
     .map(url => {
       const id = misc.getTweetIdFromUrl(url);

@@ -12,6 +12,6 @@ $ [DEBUG=*] bin/run
 ### Development
 
 ```bash
-$ node_modules/.bin/gulp test
+$ npm test
 $ npm run lint
 ```

@@ -1,6 +1,7 @@
 {
   "name": "vist-al-twitter",
   "version": "0.0.0",
+  "private": true,
   "dependencies": {
     "baconjs": "^0.7.28",
     "bluebird": "^2.3.10",

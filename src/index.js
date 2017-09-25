@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 var Promise = require("bluebird");
 var Twitter = require("./twitter");
 var misc = require("./misc");

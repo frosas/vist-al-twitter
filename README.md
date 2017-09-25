@@ -1,11 +1,10 @@
 ### Usage
 
+Copy `.env-example` to `.env` and edit it, or set its environment variables
+(`export KEY=VALUE`).
+
 ```bash
 $ npm install
-$ export VIST_AL_TWITTER_CONSUMER_KEY="..."
-$ export VIST_AL_TWITTER_CONSUMER_SECRET="..."
-$ export VIST_AL_TWITTER_ACCESS_TOKEN="..."
-$ export VIST_AL_TWITTER_ACCESS_TOKEN_SECRET="..."
 $ DEBUG="*,-puppeteer:*" npm start
 ```
 

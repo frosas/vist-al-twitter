@@ -4,7 +4,7 @@ var misc = require("./misc");
 var Bacon = require("baconjs");
 const BrowserPool = require("./browser/pool");
 var debug = require("debug")("app");
-const browserEvaluators = require("./browser-evaluators");
+const browserEvaluators = require("./browser/evaluators");
 
 var getTopicUrls = () => {
   debug("Obtaining topic URLs...");
